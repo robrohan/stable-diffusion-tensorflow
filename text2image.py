@@ -1,4 +1,5 @@
 from tensorflow import keras
+import tensorflow as tf
 from stable_diffusion_tf.stable_diffusion import StableDiffusion
 import argparse
 from PIL import Image
@@ -72,7 +73,29 @@ if args.mp:
     print("Using mixed precision.")
     keras.mixed_precision.set_global_policy("mixed_float16")
 
-generator = StableDiffusion(img_height=args.H, img_width=args.W, jit_compile=False)
+# try:
+#     print(tf.test.tpu_device_name())
+
+#     # strategy = tf.distribute.MirroredStrategy()
+#     resolver = tf.distribute.cluster_resolver.TPUClusterResolver(tpu='')#.connect()
+#     print("Device:", resolver)
+#     tf.config.experimental_connect_to_cluster(resolver)
+#     tf.tpu.experimental.initialize_tpu_system(resolver)
+#     strategy = tf.distribute.TPUStrategy(resolver)
+# except:
+#     print("Could not get TPU")
+strategy = tf.distribute.get_strategy()
+
+# print("Number of replicas:", strategy.num_replicas_in_sync)
+
+with strategy.scope():
+    generator = StableDiffusion(
+        img_height=args.H, 
+        img_width=args.W, 
+        jit_compile=False,
+        download_weights=True
+    )
+
 img = generator.generate(
     args.prompt,
     negative_prompt=args.negative_prompt,

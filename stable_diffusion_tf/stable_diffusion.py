@@ -14,7 +14,6 @@ from PIL import Image
 
 MAX_TEXT_LEN = 77
 
-
 class StableDiffusion:
     def __init__(self, img_height=1000, img_width=1000, jit_compile=False, download_weights=True):
         self.img_height = img_height
@@ -26,6 +25,17 @@ class StableDiffusion:
         self.diffusion_model = diffusion_model
         self.decoder = decoder
         self.encoder = encoder
+
+        # # print(diffusion_model, flush=True)
+        # converter = tf.lite.TFLiteConverter.from_keras_model(diffusion_model)
+        # # converter = tf.lite.TFLiteConverter.from_saved_model(diffusion_model)
+        # # converter.optimizations = [tf.lite.Optimize.DEFAULT]
+        # converter.target_spec.supported_ops = [
+        #     tf.lite.OpsSet.TFLITE_BUILTINS, # enable TensorFlow Lite ops.
+        #     tf.lite.OpsSet.SELECT_TF_OPS # enable TensorFlow ops.
+        # ]
+        # tflite_model = converter.convert()
+        # open("diffusion_model.tflite", "wb").write(tflite_model)
 
         if jit_compile:
             self.text_encoder.compile(jit_compile=True)
@@ -260,7 +270,6 @@ def get_models(img_height, img_width, download_weights=True):
             origin="https://huggingface.co/fchollet/stable-diffusion/resolve/main/decoder.h5",
             file_hash="6d3c5ba91d5cc2b134da881aaa157b2d2adc648e5625560e3ed199561d0e39d5",
         )
-
         encoder_weights_fpath = keras.utils.get_file(
             origin="https://huggingface.co/divamgupta/stable-diffusion-tensorflow/resolve/main/encoder_newW.h5",
             file_hash="56a2578423c640746c5e90c0a789b9b11481f47497f817e65b44a1a5538af754",

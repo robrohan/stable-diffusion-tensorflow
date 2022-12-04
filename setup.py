@@ -7,6 +7,6 @@ setup(
     author="Divam Gupta",
     author_email="guptadivam@gmail.com",
     platforms=["any"],  # or more specific, e.g. "win32", "cygwin", "osx"
-    url="https://github.com/divamgupta/stable-diffusion-tensorflow",
+    url="https://github.com/robrohan/stable-diffusion-tensorflow",
     packages=find_packages(),
 )

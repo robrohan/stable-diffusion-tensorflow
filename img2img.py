@@ -1,6 +1,7 @@
 import argparse
 from stable_diffusion_tf.stable_diffusion import StableDiffusion
 from PIL import Image
+import tensorflow as tf
 
 parser = argparse.ArgumentParser()
 
@@ -43,11 +44,20 @@ parser.add_argument(
 
 args = parser.parse_args()
 
-generator = StableDiffusion(
-    img_height=512,
-    img_width=512,
-    jit_compile=False,  # You can try True as well (different performance profile)
-)
+# try:
+#     tpu = tf.distribute.cluster_resolver.TPUClusterResolver.connect()
+#     print("Device:", tpu.master())
+#     strategy = tf.distribute.TPUStrategy(tpu)
+# except:
+strategy = tf.distribute.get_strategy()
+# print("Number of replicas:", strategy.num_replicas_in_sync)
+
+with strategy.scope():
+    generator = StableDiffusion(
+        img_height=512,
+        img_width=512,
+        jit_compile=False,  # You can try True as well (different performance profile)
+    )
 
 img = generator.generate(
     args.prompt,
