@@ -42,6 +42,10 @@ converter = tf.lite.TFLiteConverter.from_keras_model(diffusion_model)
 # converter.allow_custom_ops=True
 #converter.post_training_quantize=True 
 converter.optimizations =  [tf.lite.Optimize.DEFAULT]
+converter.target_ops = [
+    tf.lite.OpsSet.TFLITE_BUILTINS,
+    tf.lite.OpsSet.SELECT_TF_OPS,
+]
 tflite_model = converter.convert()
 
 print("Saving tflite model...")

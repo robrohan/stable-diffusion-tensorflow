@@ -46,7 +46,10 @@ class StableDiffusion:
         self.dtype = tf.float32
         if tf.keras.mixed_precision.global_policy().name == 'mixed_float16':
             self.dtype = tf.float16
-
+    """
+    guidance_scale: The higher the value, the more closely it follows the prompt. After a certain value it becomes random. 
+        Think of it like weights for the prompt.
+    """
     def generate(
         self,
         prompt,
